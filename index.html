@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo list with shared state</title>
+  <style>
+    h1 {
+      text-align: center;
+
+    }
+
+    .mainApp {
+      max-width: 700px;
+      margin: auto;
+      border: 1px solid red;
+      border-radius: 8px;
+      background-color: aqua;
+      min-height: 250px;
+      padding: 30px;
+      display: flex;
+      justify-content: space-evenly;
+
+    }
+
+    input,
+    button {
+      font-size: 20px;
+      padding: 5px;
+      margin: 10px;
+    }
+
+    .AddTodo {
+      display: flex;
+      flex-direction: column;
+    }
+
+    table,
+    tr,
+    td,
+    th {
+      border: 1px solid gray;
+      padding: 15px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+<script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+<script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+  // Code goes here
+
+  // for creating Row in table
+  function RowRender(props) {
+    return (
+      <tr>
+        <td>{props.obj.task}</td>
+        <td>{props.obj.isComplite}</td>
+      </tr>
+    );
+    // {props.list.length==0?<h3>No Task Assigned</h3>:props.list.map(itm)=><><td>{itm.task}</td><td>{itm.isComplite}</td></>}}
+
+  }
+
+
+  // for adding Todos
+  function AddTodo(props) {
+
+    return (
+      <div className="AddTodo">
+        <input type="text" onChange={props.typingFunc} name="task" placeholder="Enter Your Task" />
+        <button onClick={props.addFunc}>Add Todo</button>
+      </div>
+    );
+  }
+
+  // for display all todos
+  function TodoList(props) {
+    return (
+      <div className="TodoList">
+        <table>
+          <tr>
+            <th>Task</th>
+            <th>Status</th>
+
+          </tr>
+          {props.list.length == 0 ? <h3>No Task Assigned</h3> : props.list.map((itm) => { return <tr><td>{itm.task}</td><td>{itm.isComplite ? "Complete" : "Panding"}</td></tr> })}
+
+        </table>
+      </div>
+    );
+  }
+
+
+
+
+  // main app
+  function TodoApp() {
+    const [taskList, taskListUpdate] = React.useState([]);
+    const [typingText, typingTextUpdate] = React.useState("");
+
+
+
+    function todoAddFunc() {
+      let newObj = {
+        task: typingText,
+        isComplite: false
+      };
+
+      taskListUpdate(current => [...current, newObj]);
+
+    }
+
+    function typingTextStore(event) {
+      typingTextUpdate(event.target.value);
+      console.log(event.target.value);
+    }
+
+
+    return (<>
+      <h1>Todo List</h1>
+      <div className="mainApp">
+        <AddTodo typingFunc={typingTextStore} addFunc={todoAddFunc} />
+        <TodoList list={taskList} />
+      </div>
+    </>
+    );
+  }
+
+
+
+  // rendering Element
+  const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+  rootElement.render(<TodoApp />);
+</script>
+
+</html>
